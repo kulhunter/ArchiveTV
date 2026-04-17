@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DanTagleTV - Archivo Curado</title>
+    <title>DanTagleTV - Streaming</title>
     <style>
         :root {
             --bg-color: #141414;
@@ -15,12 +15,11 @@
         }
 
         body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-color); color: var(--text-main);
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
+            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-main);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden;
         }
 
+        /* NAVEGACIÓN */
         nav {
             position: fixed; top: 0; width: 100%; padding: 20px 4%;
             display: flex; justify-content: space-between; align-items: center;
@@ -29,81 +28,50 @@
             transition: background 0.4s;
         }
         nav.scrolled { background: #000; }
-
-        .nav-left {
-            display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none;
-        }
+        .nav-left { display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
         .nav-left svg { stroke: var(--brand-blue); }
         .logo-text { color: #fff; font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; }
-
-        .nav-right {
-            display: flex; align-items: center; gap: 24px;
-        }
-        .nav-link {
-            color: #e5e5e5; text-decoration: none; font-size: 0.9rem; 
-            font-weight: 500; transition: color 0.3s;
-        }
+        .nav-right { display: flex; align-items: center; gap: 24px; }
+        .nav-link { color: #e5e5e5; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
         .nav-link:hover { color: #fff; }
-
         .floating-status {
-            position: fixed; bottom: 15px; right: 15px;
-            font-size: 11px; color: var(--text-muted); font-weight: bold;
-            z-index: 1000; background: rgba(0,0,0,0.7); padding: 6px 12px; 
-            border-radius: 4px; pointer-events: none; border: 1px solid #333;
+            position: fixed; bottom: 15px; right: 15px; font-size: 11px; color: var(--text-muted); font-weight: bold;
+            z-index: 1000; background: rgba(0,0,0,0.7); padding: 6px 12px; border-radius: 4px; pointer-events: none; border: 1px solid #333;
         }
 
+        /* HERO BANNER */
         .hero {
-            height: 85vh; background-size: cover; background-position: center;
+            height: 80vh; background-size: cover; background-position: center;
             position: relative; display: flex; align-items: center; padding: 0 4%;
         }
         .hero::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 60%), 
-                        linear-gradient(to top, var(--bg-color) 0%, transparent 20%);
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 60%), linear-gradient(to top, var(--bg-color) 0%, transparent 20%);
         }
         .hero-content { position: relative; z-index: 10; max-width: 50%; }
         .hero-title { font-size: 3.5rem; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .hero-desc {
-            font-size: 1.2rem; line-height: 1.5; color: #fff; margin-bottom: 25px;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
+        .hero-desc { font-size: 1.2rem; line-height: 1.5; margin-bottom: 25px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .hero-buttons button {
-            padding: 12px 28px; font-size: 1.2rem; font-weight: bold; border: none; border-radius: 4px;
-            cursor: pointer; margin-right: 15px; display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 28px; font-size: 1.2rem; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-right: 15px;
         }
         .btn-play { background-color: white; color: black; }
         .btn-play:hover { background-color: rgba(255,255,255,0.7); }
-        .btn-info { background-color: rgba(109, 109, 110, 0.7); color: white; }
-        .btn-info:hover { background-color: rgba(109, 109, 110, 0.4); }
 
-        .sliders-container { margin-top: -100px; position: relative; z-index: 20; padding-bottom: 50px; }
+        /* CARRUSELES */
+        .sliders-container { margin-top: -80px; position: relative; z-index: 20; padding-bottom: 50px; }
         .row { margin-bottom: 3vw; padding: 0 4%; }
         .row h2 { font-size: 1.4vw; color: #e5e5e5; margin-bottom: 15px; font-weight: 500; }
-        
-        .slider {
-            display: flex; gap: 10px; overflow-x: auto; padding: 20px 0;
-            scroll-behavior: smooth; scrollbar-width: none;
-        }
+        .slider { display: flex; gap: 10px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; }
         .slider::-webkit-scrollbar { display: none; }
-        
-        .card {
-            flex: 0 0 calc(100% / 5 - 10px); aspect-ratio: 16/9; background-color: #222;
-            border-radius: 4px; cursor: pointer; transition: transform 0.3s; position: relative;
-        }
+        .card { flex: 0 0 calc(100% / 5 - 10px); aspect-ratio: 16/9; background-color: #222; border-radius: 4px; cursor: pointer; transition: transform 0.3s; position: relative; }
         .card img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
         .card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .card::after {
-            content: '▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 2rem; color: white; opacity: 0; transition: opacity 0.3s;
-            background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px 15px;
-        }
-        .card:hover::after { opacity: 1; }
 
+        /* MODAL REDISEÑADO */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center;
-            overflow-y: auto; padding: 20px 0;
+            overflow-y: auto; padding: 40px 0;
         }
         .modal-overlay.active { display: flex; }
         
@@ -113,42 +81,39 @@
         }
         
         .close-btn {
-            position: absolute; top: 15px; right: 15px; font-size: 28px; color: white;
-            cursor: pointer; z-index: 2010; background: #181818; border-radius: 50%;
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 15px; right: 15px; font-size: 28px; color: white; cursor: pointer; z-index: 2010;
+            background: rgba(0,0,0,0.6); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
         }
-        .close-btn:hover { background: #333; }
 
-        .modal-video-container { width: 100%; aspect-ratio: 16/9; background: #000; }
+        /* Ficha del Modal (Portada previa al video) */
+        .modal-presentation {
+            width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; position: relative;
+            display: flex; align-items: flex-end; padding: 40px; box-sizing: border-box;
+        }
+        .modal-presentation::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, var(--modal-bg) 0%, transparent 60%);
+        }
+        .modal-presentation-content { position: relative; z-index: 10; width: 100%; }
+        
+        /* Contenedor del video (Oculto hasta hacer clic en Play) */
+        .modal-video-container { width: 100%; aspect-ratio: 16/9; background: #000; display: none; }
         .modal-video-container iframe { width: 100%; height: 100%; border: none; }
 
-        .modal-info-box { padding: 30px; }
-        .modal-title { font-size: 2rem; margin: 0 0 15px 0; }
-        .modal-meta { margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;}
-        .meta-year { color: var(--text-main); font-weight: bold; }
-        .meta-creator { border: 1px solid var(--text-muted); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; font-size: 0.9rem;}
-        .modal-desc { color: var(--text-main); line-height: 1.6; font-size: 1.1rem; margin-bottom: 20px; }
+        .modal-info-box { padding: 0 40px 40px 40px; }
+        .modal-title { font-size: 2.5rem; margin: 0 0 15px 0; }
+        .modal-meta { margin-bottom: 20px; font-size: 1rem; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;}
+        .meta-tag { border: 1px solid var(--text-muted); color: var(--text-muted); padding: 3px 8px; border-radius: 3px; font-size: 0.85rem; font-weight: bold;}
+        .meta-cc { background: #333; color: #fff; padding: 3px 8px; border-radius: 3px; font-size: 0.85rem; font-weight: bold;}
+        .modal-desc { color: #d2d2d2; line-height: 1.6; font-size: 1.1rem; margin-bottom: 20px; max-width: 80%;}
 
-        footer {
-            text-align: center; padding: 30px 20px; color: #555; font-size: 14px;
-            background-color: var(--bg-color); margin-top: 40px; border-top: 1px solid #333;
-        }
-        footer a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
-        footer a:hover { color: var(--text-main); }
+        footer { text-align: center; padding: 30px 20px; color: #555; font-size: 14px; background-color: var(--bg-color); margin-top: 40px; border-top: 1px solid #333; }
+        footer a { color: var(--text-muted); text-decoration: none; }
 
-        @media (max-width: 1024px) {
-            .card { flex: 0 0 calc(100% / 4 - 10px); }
-            .hero-title { font-size: 2.5rem; }
-        }
+        @media (max-width: 1024px) { .card { flex: 0 0 calc(100% / 4 - 10px); } }
         @media (max-width: 768px) {
-            .hero-content { max-width: 100%; }
-            .card { flex: 0 0 calc(100% / 3 - 10px); }
-            .row h2 { font-size: 4vw; }
-            .nav-right { display: none; } 
-        }
-        @media (max-width: 480px) {
-            .card { flex: 0 0 calc(100% / 2 - 10px); }
-            .modal-content { width: 100%; min-height: 100vh; border-radius: 0; }
+            .card { flex: 0 0 calc(100% / 3 - 10px); } .row h2 { font-size: 4vw; } .nav-right { display: none; }
+            .modal-desc { max-width: 100%; } .modal-presentation { padding: 20px; } .modal-info-box { padding: 0 20px 20px 20px; }
         }
     </style>
 </head>
@@ -165,8 +130,8 @@
         <div class="nav-right">
             <a href="https://teve.cl" class="nav-link" style="color: #fff; font-weight: bold;">DanTagleTV</a>
             <a href="https://dantagle.cl" target="_blank" class="nav-link">dantagle.cl</a>
-            <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="nav-link">LinkedIn</a>
-            <a href="https://behance.net/tu-perfil" target="_blank" class="nav-link">Behance</a>
+            <a href="#" class="nav-link">LinkedIn</a>
+            <a href="#" class="nav-link">Behance</a>
         </div>
     </nav>
 
@@ -175,29 +140,25 @@
     <header class="hero" id="hero-banner">
         <div class="hero-content">
             <h1 class="hero-title" id="hero-title">Cargando...</h1>
-            <p class="hero-desc" id="hero-desc">Buscando el mejor contenido curado.</p>
-            <div class="hero-buttons" id="hero-buttons-container" style="display: none;">
-                <button class="btn-play" id="hero-play">▶ Reproducir</button>
-                <button class="btn-info" id="hero-info">ⓘ Más información</button>
-            </div>
+            <p class="hero-desc" id="hero-desc">Organizando el catálogo.</p>
         </div>
     </header>
 
     <div class="sliders-container">
         <div class="row">
-            <h2>Noticias Principales (BBC, CNN, Fox)</h2>
+            <h2>Noticias y Actualidad</h2>
             <div class="slider" id="slider-1"></div>
         </div>
         <div class="row">
-            <h2>Tendencias de la Semana</h2>
+            <h2>Películas Clásicas</h2>
             <div class="slider" id="slider-2"></div>
         </div>
         <div class="row">
-            <h2>Política y Coberturas (C-SPAN)</h2>
+            <h2>Animación y Cartoons</h2>
             <div class="slider" id="slider-3"></div>
         </div>
         <div class="row">
-            <h2>Clásicos de Televisión (Archivo Histórico)</h2>
+            <h2>Series Clásicas de TV</h2>
             <div class="slider" id="slider-4"></div>
         </div>
     </div>
@@ -205,16 +166,25 @@
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal()">×</div>
-            <div class="modal-video-container">
+            
+            <div class="modal-presentation" id="modal-presentation">
+                <div class="modal-presentation-content">
+                    <h2 class="modal-title" id="modal-title-text">Título del Video</h2>
+                    <div class="modal-meta">
+                        <span class="meta-tag" id="modal-year">2024</span>
+                        <span class="meta-tag" id="modal-creator">Creador</span>
+                        <span class="meta-cc" title="Subtítulos disponibles si la cadena original los incluyó">Subtítulos: Activa [CC] en el video</span>
+                    </div>
+                    <button class="btn-play" onclick="playVideo()" style="margin-top: 15px;">▶ Reproducir Ahora</button>
+                </div>
+            </div>
+
+            <div class="modal-video-container" id="modal-video-container">
                 <iframe id="modal-iframe" src="" allow="autoplay; fullscreen"></iframe>
             </div>
+
             <div class="modal-info-box">
-                <h2 class="modal-title" id="modal-title-text"></h2>
-                <div class="modal-meta">
-                    <span class="meta-year" id="modal-year"></span>
-                    <span class="meta-creator" id="modal-creator"></span>
-                </div>
-                <p class="modal-desc" id="modal-desc-text"></p>
+                <p class="modal-desc" id="modal-desc-text">Descripción...</p>
             </div>
         </div>
     </div>
@@ -224,44 +194,34 @@
     </footer>
 
     <script>
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
+        window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
 
-        // DEFINIMOS 4 CONSULTAS ESTRICTAS PARA GARANTIZAR CALIDAD
+        // CONSULTAS ROBUSTAS: 4 colecciones masivas que NUNCA están vacías.
         const endPoints = [
-            // Fila 1: Lo más nuevo, estrictamente de canales Top.
-            { id: 'slider-1', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+BBCNEWS+OR+FOXNEWSW+OR+MSNBCW)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=15' },
-            // Fila 2: Los videos de noticias más vistos ESTA SEMANA (Tendencias reales).
-            { id: 'slider-2', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+BBCNEWS+OR+FOXNEWSW+OR+MSNBCW)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=week+desc&output=json&rows=15' },
-            // Fila 3: Archivo Político (C-SPAN garantiza debates formales y buen estado de video).
-            { id: 'slider-3', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CSPAN+OR+CSPAN2+OR+CSPAN3)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=15' },
-            // Fila 4: Colección Classic TV. Garantiza cero basura de bots, puros clásicos humanos.
-            { id: 'slider-4', url: 'https://archive.org/advancedsearch.php?q=collection:(classic_tv)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=downloads+desc&output=json&rows=15' }
+            { id: 'slider-1', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=40' },
+            { id: 'slider-2', url: 'https://archive.org/advancedsearch.php?q=collection:(feature_films)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=downloads+desc&output=json&rows=40' },
+            { id: 'slider-3', url: 'https://archive.org/advancedsearch.php?q=collection:(animationandcartoons)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=downloads+desc&output=json&rows=40' },
+            { id: 'slider-4', url: 'https://archive.org/advancedsearch.php?q=collection:(classic_tv)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=downloads+desc&output=json&rows=40' }
         ];
 
+        const nonWesternRegex = /[\u0600-\u06FF\u0400-\u04FF\u08A0-\u08FF\u0590-\u05FF]/;
         let isModalOpen = false;
+        let currentVideoId = ""; // Guardamos el ID para reproducirlo después
 
         function getCleanDescription(item) {
             if (item.description) {
-                let txt = document.createElement("textarea");
-                txt.innerHTML = item.description;
+                let txt = document.createElement("textarea"); txt.innerHTML = item.description;
                 let clean = txt.value.replace(/<[^>]*>?/gm, ''); 
-                return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
+                return clean.length > 400 ? clean.substring(0, 400) + "..." : clean;
             }
-            const channel = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Archivo Público';
-            const dateStr = item.addeddate ? new Date(item.addeddate).toLocaleDateString() : '';
-            return `Emisión original de ${channel} ${dateStr}. Sin sinopsis detallada provista por la cadena.`;
+            return "Grabación de archivo histórico. No se ha proporcionado una sinopsis detallada para esta transmisión.";
         }
 
         async function fetchArchiveData() {
             if (isModalOpen) return; 
 
             try {
-                const statusEl = document.getElementById('status-text');
-                statusEl.innerText = "Sincronizando...";
-
-                // Ejecutamos las 4 búsquedas al mismo tiempo
+                document.getElementById('status-text').innerText = "Cargando catálogo...";
                 const fetchPromises = endPoints.map(ep => fetch(ep.url).then(res => res.json()));
                 const results = await Promise.all(fetchPromises);
 
@@ -270,62 +230,69 @@
                     const slider = document.getElementById(sliderId);
                     
                     if (data.response && data.response.docs) {
-                        slider.innerHTML = ''; // Limpiar antes de llenar
-                        const items = data.response.docs;
+                        slider.innerHTML = ''; 
+                        // Filtramos la basura (ruso, árabe, etc)
+                        const cleanDocs = data.response.docs.filter(item => {
+                            const textToCheck = (item.title || '') + ' ' + (item.creator ? item.creator.toString() : '');
+                            return !nonWesternRegex.test(textToCheck);
+                        });
 
-                        // Llenar el Hero Banner usando el primer video de la Fila 1
+                        const items = cleanDocs.slice(0, 15); // Tomamos los 15 mejores limpios
+
                         if (index === 0 && items.length > 0) {
                             const hero = items[0];
                             const heroImg = `https://archive.org/services/img/${hero.identifier}`;
                             document.getElementById('hero-banner').style.backgroundImage = `url('${heroImg}')`;
                             document.getElementById('hero-title').innerText = hero.title || 'Destacado';
                             document.getElementById('hero-desc').innerText = getCleanDescription(hero);
-                            document.getElementById('hero-buttons-container').style.display = 'block';
-                            
-                            const openHeroModal = () => openModal(hero);
-                            document.getElementById('hero-play').onclick = openHeroModal;
-                            document.getElementById('hero-info').onclick = openHeroModal;
                         }
 
-                        // Llenar las tarjetas de la fila
                         items.forEach(item => {
-                            slider.appendChild(createCard(item));
+                            const card = document.createElement('div'); card.className = 'card';
+                            card.innerHTML = `<img src="https://archive.org/services/img/${item.identifier}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222/555?text=Video'">`;
+                            card.onclick = () => openModal(item);
+                            slider.appendChild(card);
                         });
                     }
                 });
 
-                statusEl.innerText = `Catálogo Curado ${new Date().toLocaleTimeString()}`;
-
+                document.getElementById('status-text').innerText = `Listo`;
             } catch (error) {
-                console.error("Error en red:", error);
-                document.getElementById('status-text').innerText = "Error de red";
+                document.getElementById('status-text').innerText = "Reconectando...";
             }
         }
 
-        function createCard(item) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            const imgUrl = `https://archive.org/services/img/${item.identifier}`;
-            
-            card.innerHTML = `<img src="${imgUrl}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222/555?text=DanTagleTV'">`;
-            card.onclick = () => openModal(item);
-            return card;
-        }
-
         const modal = document.getElementById('modal');
+        const presentation = document.getElementById('modal-presentation');
+        const videoContainer = document.getElementById('modal-video-container');
         const iframe = document.getElementById('modal-iframe');
 
         function openModal(item) {
             isModalOpen = true;
             document.body.style.overflow = 'hidden'; 
+            currentVideoId = item.identifier; // Guardamos el ID
             
+            // Restablecer vista a "Presentación"
+            presentation.style.display = "flex";
+            videoContainer.style.display = "none";
+            iframe.src = ""; 
+
+            // Cargar datos
+            const imgUrl = `https://archive.org/services/img/${item.identifier}`;
+            presentation.style.backgroundImage = `url('${imgUrl}')`;
             document.getElementById('modal-title-text').innerText = item.title || 'Archivo de Video';
-            document.getElementById('modal-year').innerText = item.year ? item.year : (item.addeddate ? new Date(item.addeddate).getFullYear() : '');
-            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'TV Archive';
+            document.getElementById('modal-year').innerText = item.year ? item.year : (item.addeddate ? item.addeddate.split('-')[0] : 'Archivo');
+            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'DanTagleTV';
             document.getElementById('modal-desc-text').innerText = getCleanDescription(item);
             
-            iframe.src = `https://archive.org/embed/${item.identifier}?autoplay=1`;
             modal.classList.add('active');
+        }
+
+        // Esta función se llama al hacer clic en el botón "Reproducir" dentro del modal
+        function playVideo() {
+            presentation.style.display = "none"; // Oculta la portada
+            videoContainer.style.display = "block"; // Muestra el iframe
+            iframe.src = `https://archive.org/embed/${currentVideoId}?autoplay=1`; // Carga e inicia el video
         }
 
         function closeModal() {
@@ -335,14 +302,9 @@
             modal.classList.remove('active');
         }
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // Iniciar
         fetchArchiveData();
-        // Las colecciones curadas no cambian tan rápido. Actualizar cada 3 minutos es más sano.
-        setInterval(fetchArchiveData, 180000); 
     </script>
 </body>
 </html>
