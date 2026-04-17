@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchiveTV</title>
+    <title>ArchiveTV - DanTagleTV</title>
     <style>
         :root {
             --bg-color: #141414;
@@ -12,6 +12,7 @@
             --text-muted: #a3a3a3;
             --match-green: #46d369;
             --btn-red: #E50914;
+            --brand-blue: #3b82f6;
         }
 
         body {
@@ -21,17 +22,40 @@
             overflow-x: hidden;
         }
 
+        /* --- NUEVO MENÚ ESTILO TEVE.CL --- */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 20px 4% 20px 4%;
+            position: fixed; top: 0; width: 100%; padding: 20px 4%;
             display: flex; justify-content: space-between; align-items: center;
             box-sizing: border-box; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
             transition: background 0.4s;
         }
-        nav.scrolled { background: var(--bg-color); }
-        .logo { color: var(--btn-red); font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-        .nav-status { font-size: 12px; color: var(--text-muted); font-weight: bold; }
+        nav.scrolled { background: #000; } /* Fondo negro sólido al bajar */
 
+        .nav-left {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .nav-left svg { stroke: var(--brand-blue); }
+        .logo-text { color: #fff; font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; }
+
+        .nav-right {
+            display: flex; align-items: center; gap: 24px;
+        }
+        .nav-link {
+            color: #e5e5e5; text-decoration: none; font-size: 0.9rem; 
+            font-weight: 500; transition: color 0.3s;
+        }
+        .nav-link:hover { color: #fff; }
+
+        /* Estado movido a la esquina inferior derecha */
+        .floating-status {
+            position: fixed; bottom: 15px; right: 15px;
+            font-size: 11px; color: var(--text-muted); font-weight: bold;
+            z-index: 1000; background: rgba(0,0,0,0.7); padding: 6px 12px; 
+            border-radius: 4px; pointer-events: none; border: 1px solid #333;
+        }
+
+        /* --- RESTO DE LA APP --- */
         .hero {
             height: 85vh; background-size: cover; background-position: center;
             position: relative; display: flex; align-items: center; padding: 0 4%;
@@ -109,8 +133,14 @@
         .meta-year { color: var(--text-main); }
         .meta-creator { border: 1px solid var(--text-muted); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; font-size: 0.9rem;}
         .meta-cc { background-color: #333; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; border: 1px solid #555;}
-        
         .modal-desc { color: var(--text-main); line-height: 1.6; font-size: 1.1rem; margin-bottom: 20px; }
+
+        footer {
+            text-align: center; padding: 30px 20px; color: #555; font-size: 14px;
+            background-color: var(--bg-color); margin-top: 40px; border-top: 1px solid #333;
+        }
+        footer a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        footer a:hover { color: var(--text-main); }
 
         @media (max-width: 1024px) {
             .card { flex: 0 0 calc(100% / 4 - 10px); }
@@ -120,6 +150,7 @@
             .hero-content { max-width: 100%; }
             .card { flex: 0 0 calc(100% / 3 - 10px); }
             .row h2 { font-size: 4vw; }
+            .nav-right { display: none; } /* Oculta los links en móviles para no amontonar */
         }
         @media (max-width: 480px) {
             .card { flex: 0 0 calc(100% / 2 - 10px); }
@@ -130,9 +161,22 @@
 <body>
 
     <nav id="navbar">
-        <div class="logo">ARCHIVETV</div>
-        <div class="nav-status" id="status-text">Conectando con Archive.org...</div>
+        <div class="nav-left" onclick="window.scrollTo(0,0)">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                <polyline points="17 2 12 7 7 2"></polyline>
+            </svg>
+            <span class="logo-text">DanTagleTV</span>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-link" style="color: #fff; font-weight: bold;">ArchiveTV</a>
+            <a href="https://dantagle.cl" target="_blank" class="nav-link">dantagle.cl</a>
+            <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="nav-link">LinkedIn</a>
+            <a href="https://behance.net/tu-perfil" target="_blank" class="nav-link">Behance</a>
+        </div>
     </nav>
+
+    <div id="status-text" class="floating-status">Conectando...</div>
 
     <header class="hero" id="hero-banner">
         <div class="hero-content">
@@ -147,7 +191,7 @@
 
     <div class="sliders-container">
         <div class="row">
-            <h2>Noticias Recientes (Inglés & Español)</h2>
+            <h2>Noticias Recientes</h2>
             <div class="slider" id="slider-1"></div>
         </div>
         <div class="row">
@@ -183,19 +227,21 @@
         </div>
     </div>
 
+    <footer>
+        App diseñada por <a href="https://Dantagle.cl" target="_blank">Dantagle.cl</a>
+    </footer>
+
     <script>
+        // Oscurecer menú al hacer scroll
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // 1. EL FILTRO CORREGIDO: 
-        // Eliminamos "tv" pública. Usamos solo "tvnews" y forzamos a que el creador sea una cadena conocida.
-        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+FOXNEWSW+OR+MSNBCW+OR+BBCNEWS+OR+CSPAN+OR+TELESUR+OR+ALJAZEERA)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';
+        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';
         
         let isModalOpen = false;
         let globalItems = [];
 
-        // 2. EL GENERADOR DE DESCRIPCIONES (Ya no habrá espacios vacíos)
         function getCleanDescription(item) {
             if (item.description) {
                 let txt = document.createElement("textarea");
@@ -204,7 +250,6 @@
                 return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
             }
             
-            // Si no hay descripción, inventamos una formal basada en los datos:
             const channel = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'una cadena internacional';
             const dateStr = item.addeddate ? new Date(item.addeddate).toLocaleString() : 'recientemente';
             return `Grabación en bruto capturada automáticamente de ${channel} el ${dateStr}. Las cadenas de televisión en vivo no adjuntan sinopsis detalladas al momento de la transmisión. Reproduce el video para ver la cobertura original y activa los subtítulos (CC) en la barra de control si están disponibles.`;
@@ -215,15 +260,13 @@
 
             try {
                 const statusEl = document.getElementById('status-text');
-                statusEl.innerText = "Sincronizando catálogo...";
+                statusEl.innerText = "Sincronizando...";
 
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                // 3. SEGURO ANTI-CHOQUES: Si falla la búsqueda, no rompas la app.
                 if (!data.response || !data.response.docs || data.response.docs.length === 0) {
-                    statusEl.innerText = "Catálogo vacío. Reintentando en breve...";
-                    console.warn("La API devolvió 0 resultados.");
+                    statusEl.innerText = "Reintentando...";
                     return; 
                 }
                 
@@ -256,11 +299,11 @@
                 fillSlider('slider-3', 31, 46);
                 fillSlider('slider-4', 46, 61);
 
-                statusEl.innerText = `Catálogo al día (${new Date().toLocaleTimeString()})`;
+                statusEl.innerText = `Sincronizado ${new Date().toLocaleTimeString()}`;
 
             } catch (error) {
                 console.error("Error grave en la conexión:", error);
-                document.getElementById('status-text').innerText = "Error de red. Reintentando...";
+                document.getElementById('status-text').innerText = "Error de red";
             }
         }
 
@@ -286,7 +329,6 @@
             document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Señal de TV';
             document.getElementById('modal-desc-text').innerText = getCleanDescription(item);
             
-            // Forzamos el reproductor de Archive.org a cargar con autoplay
             iframe.src = `https://archive.org/embed/${item.identifier}?autoplay=1`;
             
             modal.classList.add('active');
@@ -295,7 +337,7 @@
         function closeModal() {
             isModalOpen = false;
             document.body.style.overflow = 'auto'; 
-            iframe.src = ''; // Apagar video al cerrar
+            iframe.src = ''; 
             modal.classList.remove('active');
         }
 
@@ -303,12 +345,8 @@
             if (e.target === modal) closeModal();
         });
 
-        // Arranque inmediato
         fetchArchiveData();
-        // Bucle a prueba de fallos
         setInterval(fetchArchiveData, 60000);
     </script>
-
-    web by Dantagle.cl 
 </body>
 </html>
