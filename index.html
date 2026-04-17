@@ -196,8 +196,8 @@
         });
 
         // Solicitamos 61 items con descripción, creador y año
-        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvnews)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';
-        
+// Añadimos +AND+language:(eng+OR+spa) a la consulta
+const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvnews)+AND+language:(eng+OR+spa)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';        
         let isModalOpen = false;
         let globalItems = []; // Guardaremos los datos aquí para usarlos en el modal
 
