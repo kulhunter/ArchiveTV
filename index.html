@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DanTagleTV - Archivo en Vivo</title>
+    <title>DanTagleTV - Archivo Curado</title>
     <style>
         :root {
             --bg-color: #141414;
@@ -175,7 +175,7 @@
     <header class="hero" id="hero-banner">
         <div class="hero-content">
             <h1 class="hero-title" id="hero-title">Cargando...</h1>
-            <p class="hero-desc" id="hero-desc">Por favor espera mientras buscamos las últimas transmisiones.</p>
+            <p class="hero-desc" id="hero-desc">Buscando el mejor contenido curado.</p>
             <div class="hero-buttons" id="hero-buttons-container" style="display: none;">
                 <button class="btn-play" id="hero-play">▶ Reproducir</button>
                 <button class="btn-info" id="hero-info">ⓘ Más información</button>
@@ -185,19 +185,19 @@
 
     <div class="sliders-container">
         <div class="row">
-            <h2>Noticias Recientes</h2>
+            <h2>Noticias Principales (BBC, CNN, Fox)</h2>
             <div class="slider" id="slider-1"></div>
         </div>
         <div class="row">
-            <h2>Transmisiones en vivo</h2>
+            <h2>Tendencias de la Semana</h2>
             <div class="slider" id="slider-2"></div>
         </div>
         <div class="row">
-            <h2>Reportes Internacionales</h2>
+            <h2>Política y Coberturas (C-SPAN)</h2>
             <div class="slider" id="slider-3"></div>
         </div>
         <div class="row">
-            <h2>Archivo Histórico</h2>
+            <h2>Clásicos de Televisión (Archivo Histórico)</h2>
             <div class="slider" id="slider-4"></div>
         </div>
     </div>
@@ -228,14 +228,19 @@
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Pedimos 100 resultados para tener margen tras filtrar la basura
-        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=100';
-        
-        // Expresión Regular para detectar caracteres Árabes, Cirílicos (Ruso) y Hebreos.
-        const nonWesternRegex = /[\u0600-\u06FF\u0400-\u04FF\u08A0-\u08FF\u0590-\u05FF]/;
+        // DEFINIMOS 4 CONSULTAS ESTRICTAS PARA GARANTIZAR CALIDAD
+        const endPoints = [
+            // Fila 1: Lo más nuevo, estrictamente de canales Top.
+            { id: 'slider-1', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+BBCNEWS+OR+FOXNEWSW+OR+MSNBCW)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=15' },
+            // Fila 2: Los videos de noticias más vistos ESTA SEMANA (Tendencias reales).
+            { id: 'slider-2', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+BBCNEWS+OR+FOXNEWSW+OR+MSNBCW)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=week+desc&output=json&rows=15' },
+            // Fila 3: Archivo Político (C-SPAN garantiza debates formales y buen estado de video).
+            { id: 'slider-3', url: 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CSPAN+OR+CSPAN2+OR+CSPAN3)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=15' },
+            // Fila 4: Colección Classic TV. Garantiza cero basura de bots, puros clásicos humanos.
+            { id: 'slider-4', url: 'https://archive.org/advancedsearch.php?q=collection:(classic_tv)+AND+mediatype:(movies)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=downloads+desc&output=json&rows=15' }
+        ];
 
         let isModalOpen = false;
-        let globalItems = [];
 
         function getCleanDescription(item) {
             if (item.description) {
@@ -244,9 +249,9 @@
                 let clean = txt.value.replace(/<[^>]*>?/gm, ''); 
                 return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
             }
-            const channel = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'una cadena internacional';
-            const dateStr = item.addeddate ? new Date(item.addeddate).toLocaleString() : 'recientemente';
-            return `Grabación capturada automáticamente de ${channel} el ${dateStr}. Sin sinopsis detallada provista por la cadena original.`;
+            const channel = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Archivo Público';
+            const dateStr = item.addeddate ? new Date(item.addeddate).toLocaleDateString() : '';
+            return `Emisión original de ${channel} ${dateStr}. Sin sinopsis detallada provista por la cadena.`;
         }
 
         async function fetchArchiveData() {
@@ -256,52 +261,40 @@
                 const statusEl = document.getElementById('status-text');
                 statusEl.innerText = "Sincronizando...";
 
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                if (!data.response || !data.response.docs || data.response.docs.length === 0) {
-                    statusEl.innerText = "Reintentando...";
-                    return; 
-                }
-                
-                // FILTRO INTELIGENTE: Descartamos cualquier video que tenga letras árabes o rusas
-                const rawDocs = data.response.docs;
-                const cleanDocs = rawDocs.filter(item => {
-                    const textToCheck = (item.title || '') + ' ' + (item.creator ? item.creator.toString() : '');
-                    return !nonWesternRegex.test(textToCheck);
+                // Ejecutamos las 4 búsquedas al mismo tiempo
+                const fetchPromises = endPoints.map(ep => fetch(ep.url).then(res => res.json()));
+                const results = await Promise.all(fetchPromises);
+
+                results.forEach((data, index) => {
+                    const sliderId = endPoints[index].id;
+                    const slider = document.getElementById(sliderId);
+                    
+                    if (data.response && data.response.docs) {
+                        slider.innerHTML = ''; // Limpiar antes de llenar
+                        const items = data.response.docs;
+
+                        // Llenar el Hero Banner usando el primer video de la Fila 1
+                        if (index === 0 && items.length > 0) {
+                            const hero = items[0];
+                            const heroImg = `https://archive.org/services/img/${hero.identifier}`;
+                            document.getElementById('hero-banner').style.backgroundImage = `url('${heroImg}')`;
+                            document.getElementById('hero-title').innerText = hero.title || 'Destacado';
+                            document.getElementById('hero-desc').innerText = getCleanDescription(hero);
+                            document.getElementById('hero-buttons-container').style.display = 'block';
+                            
+                            const openHeroModal = () => openModal(hero);
+                            document.getElementById('hero-play').onclick = openHeroModal;
+                            document.getElementById('hero-info').onclick = openHeroModal;
+                        }
+
+                        // Llenar las tarjetas de la fila
+                        items.forEach(item => {
+                            slider.appendChild(createCard(item));
+                        });
+                    }
                 });
 
-                // Tomamos solo los 61 limpios para llenar la UI
-                globalItems = cleanDocs.slice(0, 61);
-
-                if (globalItems.length === 0) return; // Si por alguna razón todo era basura, no hacemos nada
-
-                const hero = globalItems[0];
-                const heroImg = `https://archive.org/services/img/${hero.identifier}`;
-                
-                document.getElementById('hero-banner').style.backgroundImage = `url('${heroImg}')`;
-                document.getElementById('hero-title').innerText = hero.title || 'Transmisión Reciente';
-                document.getElementById('hero-desc').innerText = getCleanDescription(hero);
-                document.getElementById('hero-buttons-container').style.display = 'block';
-                
-                const openHeroModal = () => openModal(hero);
-                document.getElementById('hero-play').onclick = openHeroModal;
-                document.getElementById('hero-info').onclick = openHeroModal;
-
-                const fillSlider = (sliderId, startIndex, endIndex) => {
-                    const slider = document.getElementById(sliderId);
-                    slider.innerHTML = ''; 
-                    globalItems.slice(startIndex, endIndex).forEach(item => {
-                        slider.appendChild(createCard(item));
-                    });
-                };
-
-                fillSlider('slider-1', 1, 16);
-                fillSlider('slider-2', 16, 31);
-                fillSlider('slider-3', 31, 46);
-                fillSlider('slider-4', 46, 61);
-
-                statusEl.innerText = `Sincronizado ${new Date().toLocaleTimeString()}`;
+                statusEl.innerText = `Catálogo Curado ${new Date().toLocaleTimeString()}`;
 
             } catch (error) {
                 console.error("Error en red:", error);
@@ -326,13 +319,12 @@
             isModalOpen = true;
             document.body.style.overflow = 'hidden'; 
             
-            document.getElementById('modal-title-text').innerText = item.title || 'Cobertura en Vivo';
-            document.getElementById('modal-year').innerText = item.year ? item.year : new Date().getFullYear();
-            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Señal de TV';
+            document.getElementById('modal-title-text').innerText = item.title || 'Archivo de Video';
+            document.getElementById('modal-year').innerText = item.year ? item.year : (item.addeddate ? new Date(item.addeddate).getFullYear() : '');
+            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'TV Archive';
             document.getElementById('modal-desc-text').innerText = getCleanDescription(item);
             
             iframe.src = `https://archive.org/embed/${item.identifier}?autoplay=1`;
-            
             modal.classList.add('active');
         }
 
@@ -347,8 +339,10 @@
             if (e.target === modal) closeModal();
         });
 
+        // Iniciar
         fetchArchiveData();
-        setInterval(fetchArchiveData, 60000);
+        // Las colecciones curadas no cambian tan rápido. Actualizar cada 3 minutos es más sano.
+        setInterval(fetchArchiveData, 180000); 
     </script>
 </body>
 </html>
