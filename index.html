@@ -3,351 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchiveTV - by Dantagle.cl </title>
+    <title>ArchiveTV - by Dantagle.cl</title>
     <style>
         :root {
-            --netflix-red: #E50914;
             --bg-color: #141414;
-            --text-color: #ffffff;
+            --modal-bg: #181818;
+            --text-main: #fff;
+            --text-muted: #a3a3a3;
+            --match-green: #46d369;
+            --btn-red: #E50914;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            margin: 0; padding: 0;
+            background-color: var(--bg-color); color: var(--text-main);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             overflow-x: hidden;
-            user-select: none;
         }
 
-        /* Navbar */
+        /* --- NAVEGACIÓN --- */
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            transition: background 0.3s ease;
+            position: fixed; top: 0; width: 100%; padding: 20px 4% 20px 4%;
+            display: flex; justify-content: space-between; align-items: center;
+            box-sizing: border-box; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            transition: background 0.4s;
         }
+        nav.scrolled { background: var(--bg-color); }
+        .logo { color: var(--btn-red); font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+        .nav-status { font-size: 12px; color: var(--text-muted); }
 
-        nav.scrolled {
-            background: var(--bg-color);
-        }
-
-        .logo {
-            color: var(--netflix-red);
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .nav-status {
-            font-size: 12px;
-            color: #aaa;
-        }
-
-        /* Hero Banner */
+        /* --- HERO BANNER --- */
         .hero {
-            height: 80vh;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding: 0 40px;
+            height: 85vh; background-size: cover; background-position: center;
+            position: relative; display: flex; align-items: center; padding: 0 4%;
         }
-
         .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%), 
-                        linear-gradient(to top, var(--bg-color) 0%, rgba(0,0,0,0) 20%);
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 60%), 
+                        linear-gradient(to top, var(--bg-color) 0%, transparent 20%);
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 50%;
+        .hero-content { position: relative; z-index: 10; max-width: 50%; }
+        .hero-title { font-size: 3.5rem; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .hero-desc {
+            font-size: 1.2rem; line-height: 1.5; color: #fff; margin-bottom: 25px;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-
-        .hero-title {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
-        }
-
-        .hero-description {
-            font-size: 1.2rem;
-            line-height: 1.4;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
         .hero-buttons button {
-            padding: 10px 24px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            padding: 12px 28px; font-size: 1.2rem; font-weight: bold; border: none; border-radius: 4px;
+            cursor: pointer; margin-right: 15px; display: inline-flex; align-items: center; gap: 10px;
         }
+        .btn-play { background-color: white; color: black; }
+        .btn-play:hover { background-color: rgba(255,255,255,0.7); }
+        .btn-info { background-color: rgba(109, 109, 110, 0.7); color: white; }
+        .btn-info:hover { background-color: rgba(109, 109, 110, 0.4); }
 
-        .btn-play {
-            background-color: white;
-            color: black;
-        }
-
-        .btn-play:hover { background-color: rgba(255,255,255,0.75); }
-
-        /* Sliders / Filas */
-        .sliders-container {
-            margin-top: -80px; /* Sube el contenido sobre el difuminado del Hero */
-            position: relative;
-            z-index: 20;
-            padding-bottom: 50px;
-        }
-
-        .row {
-            margin-bottom: 40px;
-            padding: 0 40px;
-        }
-
-        .row h2 {
-            font-size: 1.4vw;
-            color: #e5e5e5;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
+        /* --- FILAS / SLIDERS --- */
+        .sliders-container { margin-top: -100px; position: relative; z-index: 20; padding-bottom: 50px; }
+        .row { margin-bottom: 3vw; padding: 0 4%; }
+        .row h2 { font-size: 1.4vw; color: #e5e5e5; margin-bottom: 15px; font-weight: 500; }
+        
         .slider {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 20px 0; /* Espacio para el hover */
-            scrollbar-width: none;
+            display: flex; gap: 10px; overflow-x: auto; padding: 20px 0;
+            scroll-behavior: smooth; scrollbar-width: none;
         }
-
         .slider::-webkit-scrollbar { display: none; }
-
+        
         .card {
-            flex: 0 0 calc(100% / 6 - 8px); /* 6 tarjetas por fila en escritorio */
-            aspect-ratio: 16 / 9;
-            background-color: #222;
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.3s;
+            flex: 0 0 calc(100% / 5 - 10px); aspect-ratio: 16/9; background-color: #222;
+            border-radius: 4px; cursor: pointer; transition: transform 0.3s; position: relative;
         }
+        .card img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+        .card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        
+        /* Play icon on hover */
+        .card::after {
+            content: '▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 2rem; color: white; opacity: 0; transition: opacity 0.3s;
+            background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px 15px;
+        }
+        .card:hover::after { opacity: 1; }
 
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 4px;
+        /* --- MODAL (VISTA DE DETALLES) --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;
+            overflow-y: auto; padding: 20px 0;
         }
+        .modal-overlay.active { display: flex; }
+        
+        .modal-content {
+            background-color: var(--modal-bg); width: 90%; max-width: 850px; border-radius: 10px;
+            overflow: hidden; position: relative; box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+            margin: auto;
+        }
+        
+        .close-btn {
+            position: absolute; top: 15px; right: 15px; font-size: 28px; color: white;
+            cursor: pointer; z-index: 2010; background: #181818; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+        }
+        .close-btn:hover { background: #333; }
 
-        /* Efecto Hover estilo Netflix */
-        .card:hover {
-            transform: scale(1.3) translateY(-10%);
-            z-index: 99;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-        }
+        .modal-video-container { width: 100%; aspect-ratio: 16/9; background: #000; }
+        .modal-video-container iframe { width: 100%; height: 100%; border: none; }
 
-        .card-info {
-            opacity: 0;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            padding: 20px 10px 10px 10px;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .card:hover .card-info {
-            opacity: 1;
-        }
-
-        .card-title {
-            font-size: 0.7vw;
-            font-weight: bold;
-            margin: 0 0 4px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-meta {
-            font-size: 0.6vw;
-            color: #46d369; /* Match green */
-            font-weight: bold;
-        }
+        .modal-info-box { padding: 30px; }
+        .modal-title { font-size: 2rem; margin: 0 0 15px 0; }
+        .modal-meta { margin-bottom: 20px; font-size: 1.1rem; }
+        .meta-match { color: var(--match-green); font-weight: bold; margin-right: 10px; }
+        .meta-year { color: var(--text-main); margin-right: 10px; }
+        .meta-creator { border: 1px solid var(--text-muted); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; font-size: 0.9rem;}
+        
+        .modal-desc { color: var(--text-main); line-height: 1.6; font-size: 1.1rem; margin-bottom: 20px; }
 
         /* Responsividad */
         @media (max-width: 1024px) {
-            .card { flex: 0 0 calc(100% / 4 - 8px); }
-            .card-title { font-size: 1.2vw; }
-            .card-meta { font-size: 1vw; }
+            .card { flex: 0 0 calc(100% / 4 - 10px); }
+            .hero-title { font-size: 2.5rem; }
         }
         @media (max-width: 768px) {
-            .hero-title { font-size: 2rem; }
-            .hero-content { max-width: 80%; }
-            .card { flex: 0 0 calc(100% / 3 - 8px); }
-            .card-title { font-size: 2vw; }
-            .card-meta { font-size: 1.5vw; }
+            .hero-content { max-width: 100%; }
+            .card { flex: 0 0 calc(100% / 3 - 10px); }
+            .row h2 { font-size: 4vw; }
         }
         @media (max-width: 480px) {
-            .card { flex: 0 0 calc(100% / 2 - 8px); }
-            .card-title { font-size: 3vw; }
+            .card { flex: 0 0 calc(100% / 2 - 10px); }
+            .modal-content { width: 100%; min-height: 100vh; border-radius: 0; }
         }
     </style>
 </head>
 <body>
 
     <nav id="navbar">
-        <div class="logo">ArchiveTV</div>
-        <div class="nav-status" id="status-text">Actualizando...</div>
+        <div class="logo">ARCHIVETV by DanTagle.cl</div>
+        <div class="nav-status" id="status-text">Conectando...</div>
     </nav>
 
     <header class="hero" id="hero-banner">
         <div class="hero-content">
-            <h1 class="hero-title" id="hero-title">Cargando...</h1>
-            <p class="hero-description" id="hero-desc">Buscando las últimas transmisiones en Internet Archive...</p>
+            <h1 class="hero-title" id="hero-title">...</h1>
+            <p class="hero-desc" id="hero-desc">...</p>
             <div class="hero-buttons">
                 <button class="btn-play" id="hero-play">▶ Reproducir</button>
+                <button class="btn-info" id="hero-info">ⓘ Más información</button>
             </div>
         </div>
     </header>
 
     <div class="sliders-container">
         <div class="row">
-            <h2>Transmisiones Recientes</h2>
-            <div class="slider" id="slider-recent">
-                </div>
+            <h2>Nuevos Lanzamientos</h2>
+            <div class="slider" id="slider-1"></div>
         </div>
-        
         <div class="row">
-            <h2>Noticias y Clásicos</h2>
-            <div class="slider" id="slider-news">
+            <h2>Tendencias de hoy</h2>
+            <div class="slider" id="slider-2"></div>
+        </div>
+        <div class="row">
+            <h2>Transmisiones Históricas</h2>
+            <div class="slider" id="slider-3"></div>
+        </div>
+        <div class="row">
+            <h2>Documentales y Noticias</h2>
+            <div class="slider" id="slider-4"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal()">×</div>
+            <div class="modal-video-container">
+                <iframe id="modal-iframe" src="" allow="autoplay; fullscreen"></iframe>
+            </div>
+            <div class="modal-info-box">
+                <h2 class="modal-title" id="modal-title-text"></h2>
+                <div class="modal-meta">
+                    <span class="meta-match" id="modal-match">98% para ti</span>
+                    <span class="meta-year" id="modal-year"></span>
+                    <span class="meta-creator" id="modal-creator"></span>
                 </div>
+                <p class="modal-desc" id="modal-desc-text"></p>
+            </div>
         </div>
     </div>
 
     <script>
-        // Efecto oscuro en el Navbar al hacer scroll
+        // Efecto scroll en Navbar
         window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Hacemos la consulta más amplia y robusta: tvnews y classic_tv
-        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews+OR+classic_tv)&fl[]=identifier,title,description,addeddate&sort[]=addeddate+desc&output=json&rows=31';
+        // Solicitamos 61 items con descripción, creador y año
+        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvnews)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';
         
-        const sliderRecent = document.getElementById('slider-recent');
-        const sliderNews = document.getElementById('slider-news');
-        const statusText = document.getElementById('status-text');
+        let isModalOpen = false;
+        let globalItems = []; // Guardaremos los datos aquí para usarlos en el modal
 
-        async function fetchNetflixData() {
+        // Función para limpiar etiquetas HTML raras de las sinopsis de Archive.org
+        function cleanText(html) {
+            if (!html) return "No hay descripción disponible para esta transmisión.";
+            let txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            let clean = txt.value.replace(/<[^>]*>?/gm, ''); // Elimina tags HTML
+            return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
+        }
+
+        async function fetchArchiveData() {
+            // No actualizar la pantalla si el usuario está viendo un video en el modal
+            if (isModalOpen) return; 
+
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                if (!data.response || !data.response.docs || data.response.docs.length === 0) {
-                    statusText.innerText = "Error: No se encontraron videos.";
-                    return;
-                }
-
-                const items = data.response.docs;
-
-                // 1. Configurar el Hero Banner con el video #1 (índice 0)
-                const heroItem = items[0];
-                const heroImgUrl = `https://archive.org/services/img/${heroItem.identifier}`;
-                const heroVideoUrl = `https://archive.org/embed/${heroItem.identifier}`;
+                if (!data.response || !data.response.docs) return;
                 
-                document.getElementById('hero-banner').style.backgroundImage = `url('${heroImgUrl}')`;
-                document.getElementById('hero-title').innerText = heroItem.title || 'Sin Título';
-                document.getElementById('hero-desc').innerText = heroItem.description ? heroItem.description : 'Una transmisión reciente capturada por Internet Archive.';
-                document.getElementById('hero-play').onclick = () => window.open(heroVideoUrl, '_blank');
+                globalItems = data.response.docs;
 
-                // Limpiar sliders
-                sliderRecent.innerHTML = '';
-                sliderNews.innerHTML = '';
+                // --- 1. Configurar Hero Banner ---
+                const hero = globalItems[0];
+                const heroImg = `https://archive.org/services/img/${hero.identifier}`;
+                const heroCleanDesc = cleanText(hero.description);
+                
+                document.getElementById('hero-banner').style.backgroundImage = `url('${heroImg}')`;
+                document.getElementById('hero-title').innerText = hero.title || 'Sin Título';
+                document.getElementById('hero-desc').innerText = heroCleanDesc;
+                
+                // Botones del Hero abren el Modal con los datos del video principal
+                const openHeroModal = () => openModal(hero);
+                document.getElementById('hero-play').onclick = openHeroModal;
+                document.getElementById('hero-info').onclick = openHeroModal;
 
-                // 2. Rellenar Fila 1 (Ítems del 1 al 15)
-                items.slice(1, 16).forEach(item => {
-                    sliderRecent.appendChild(createCard(item));
-                });
+                // --- 2. Rellenar Carruseles ---
+                const fillSlider = (sliderId, startIndex, endIndex) => {
+                    const slider = document.getElementById(sliderId);
+                    slider.innerHTML = ''; // Limpiar antes de actualizar
+                    globalItems.slice(startIndex, endIndex).forEach(item => {
+                        slider.appendChild(createCard(item));
+                    });
+                };
 
-                // 3. Rellenar Fila 2 (Ítems del 16 al 30)
-                items.slice(16, 31).forEach(item => {
-                    sliderNews.appendChild(createCard(item));
-                });
+                fillSlider('slider-1', 1, 16);
+                fillSlider('slider-2', 16, 31);
+                fillSlider('slider-3', 31, 46);
+                fillSlider('slider-4', 46, 61);
 
-                const now = new Date();
-                statusText.innerText = `Sincronizado: ${now.toLocaleTimeString()}`;
+                const time = new Date().toLocaleTimeString();
+                document.getElementById('status-text').innerText = `Actualizado: ${time}`;
 
             } catch (error) {
-                console.error("Error al obtener los datos:", error);
-                statusText.innerText = "Reconectando...";
+                console.error("Error al obtener datos:", error);
+                document.getElementById('status-text').innerText = "Reconectando...";
             }
         }
 
-        // Función auxiliar para crear las tarjetas HTML
+        // Crea una miniatura que, al hacer clic, abre el modal
         function createCard(item) {
             const card = document.createElement('div');
             card.className = 'card';
             const imgUrl = `https://archive.org/services/img/${item.identifier}`;
-            const videoUrl = `https://archive.org/embed/${item.identifier}`;
             
-            // Formatear hora
-            const dateObj = new Date(item.addeddate);
-            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            card.onclick = () => window.open(videoUrl, '_blank');
-            card.innerHTML = `
-                <img src="${imgUrl}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222222/FFFFFF?text=ArchiveTV'">
-                <div class="card-info">
-                    <p class="card-title">${item.title}</p>
-                    <p class="card-meta">Nuevo • ${timeStr}</p>
-                </div>
-            `;
+            card.innerHTML = `<img src="${imgUrl}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222/555?text=ArchiveTV'">`;
+            
+            // Al hacer clic, abrimos la ventana de detalles
+            card.onclick = () => openModal(item);
             return card;
         }
 
-        // Iniciar
-        fetchNetflixData();
+        // --- LÓGICA DEL MODAL FUNCIONAL ---
+        const modal = document.getElementById('modal');
+        const iframe = document.getElementById('modal-iframe');
 
-        // Actualizar cada 60 segundos
-        setInterval(fetchNetflixData, 60000);
+        function openModal(item) {
+            isModalOpen = true;
+            document.body.style.overflow = 'hidden'; // Evita el scroll del fondo
+            
+            // Inyectar datos en la UI del Modal
+            document.getElementById('modal-title-text').innerText = item.title || 'Desconocido';
+            document.getElementById('modal-year').innerText = item.year ? item.year : new Date(item.addeddate).getFullYear();
+            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Archivo Público';
+            document.getElementById('modal-desc-text').innerText = cleanText(item.description);
+            
+            // Inyectar URL del video con autoplay activado
+            iframe.src = `https://archive.org/embed/${item.identifier}?autoplay=1`;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            isModalOpen = false;
+            document.body.style.overflow = 'auto'; // Restaurar scroll
+            iframe.src = ''; // Limpiar src detiene el video automáticamente
+            modal.classList.remove('active');
+        }
+
+        // Cerrar modal al hacer clic fuera del recuadro
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Inicializar
+        fetchArchiveData();
+
+        // Actualizar datos cada minuto, de forma silenciosa
+        setInterval(fetchArchiveData, 60000);
     </script>
 </body>
 </html>
