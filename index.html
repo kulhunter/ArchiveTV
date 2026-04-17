@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchiveTV - by Dantagle.cl</title>
+    <title>ArchiveTV - by Dantagle.cl </title>
     <style>
         :root {
             --bg-color: #141414;
@@ -21,7 +21,6 @@
             overflow-x: hidden;
         }
 
-        /* --- NAVEGACIÓN --- */
         nav {
             position: fixed; top: 0; width: 100%; padding: 20px 4% 20px 4%;
             display: flex; justify-content: space-between; align-items: center;
@@ -31,9 +30,8 @@
         }
         nav.scrolled { background: var(--bg-color); }
         .logo { color: var(--btn-red); font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-        .nav-status { font-size: 12px; color: var(--text-muted); }
+        .nav-status { font-size: 12px; color: var(--text-muted); font-weight: bold; }
 
-        /* --- HERO BANNER --- */
         .hero {
             height: 85vh; background-size: cover; background-position: center;
             position: relative; display: flex; align-items: center; padding: 0 4%;
@@ -59,7 +57,6 @@
         .btn-info { background-color: rgba(109, 109, 110, 0.7); color: white; }
         .btn-info:hover { background-color: rgba(109, 109, 110, 0.4); }
 
-        /* --- FILAS / SLIDERS --- */
         .sliders-container { margin-top: -100px; position: relative; z-index: 20; padding-bottom: 50px; }
         .row { margin-bottom: 3vw; padding: 0 4%; }
         .row h2 { font-size: 1.4vw; color: #e5e5e5; margin-bottom: 15px; font-weight: 500; }
@@ -76,8 +73,6 @@
         }
         .card img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
         .card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        
-        /* Play icon on hover */
         .card::after {
             content: '▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             font-size: 2rem; color: white; opacity: 0; transition: opacity 0.3s;
@@ -85,18 +80,16 @@
         }
         .card:hover::after { opacity: 1; }
 
-        /* --- MODAL (VISTA DE DETALLES) --- */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center;
             overflow-y: auto; padding: 20px 0;
         }
         .modal-overlay.active { display: flex; }
         
         .modal-content {
-            background-color: var(--modal-bg); width: 90%; max-width: 850px; border-radius: 10px;
-            overflow: hidden; position: relative; box-shadow: 0 15px 30px rgba(0,0,0,0.8);
-            margin: auto;
+            background-color: var(--modal-bg); width: 90%; max-width: 900px; border-radius: 10px;
+            overflow: hidden; position: relative; box-shadow: 0 15px 30px rgba(0,0,0,0.8); margin: auto;
         }
         
         .close-btn {
@@ -111,14 +104,14 @@
 
         .modal-info-box { padding: 30px; }
         .modal-title { font-size: 2rem; margin: 0 0 15px 0; }
-        .modal-meta { margin-bottom: 20px; font-size: 1.1rem; }
-        .meta-match { color: var(--match-green); font-weight: bold; margin-right: 10px; }
-        .meta-year { color: var(--text-main); margin-right: 10px; }
+        .modal-meta { margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;}
+        .meta-match { color: var(--match-green); font-weight: bold; }
+        .meta-year { color: var(--text-main); }
         .meta-creator { border: 1px solid var(--text-muted); color: var(--text-muted); padding: 2px 6px; border-radius: 3px; font-size: 0.9rem;}
+        .meta-cc { background-color: #333; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; border: 1px solid #555;}
         
         .modal-desc { color: var(--text-main); line-height: 1.6; font-size: 1.1rem; margin-bottom: 20px; }
 
-        /* Responsividad */
         @media (max-width: 1024px) {
             .card { flex: 0 0 calc(100% / 4 - 10px); }
             .hero-title { font-size: 2.5rem; }
@@ -137,15 +130,15 @@
 <body>
 
     <nav id="navbar">
-        <div class="logo">ARCHIVETV by DanTagle.cl</div>
-        <div class="nav-status" id="status-text">Conectando...</div>
+        <div class="logo">ARCHIVETV</div>
+        <div class="nav-status" id="status-text">Conectando con Archive.org...</div>
     </nav>
 
     <header class="hero" id="hero-banner">
         <div class="hero-content">
-            <h1 class="hero-title" id="hero-title">...</h1>
-            <p class="hero-desc" id="hero-desc">...</p>
-            <div class="hero-buttons">
+            <h1 class="hero-title" id="hero-title">Cargando...</h1>
+            <p class="hero-desc" id="hero-desc">Por favor espera mientras buscamos las últimas transmisiones.</p>
+            <div class="hero-buttons" id="hero-buttons-container" style="display: none;">
                 <button class="btn-play" id="hero-play">▶ Reproducir</button>
                 <button class="btn-info" id="hero-info">ⓘ Más información</button>
             </div>
@@ -154,19 +147,19 @@
 
     <div class="sliders-container">
         <div class="row">
-            <h2>Nuevos Lanzamientos</h2>
+            <h2>Noticias Recientes (Inglés & Español)</h2>
             <div class="slider" id="slider-1"></div>
         </div>
         <div class="row">
-            <h2>Tendencias de hoy</h2>
+            <h2>Transmisiones en vivo</h2>
             <div class="slider" id="slider-2"></div>
         </div>
         <div class="row">
-            <h2>Transmisiones Históricas</h2>
+            <h2>Reportes Internacionales</h2>
             <div class="slider" id="slider-3"></div>
         </div>
         <div class="row">
-            <h2>Documentales y Noticias</h2>
+            <h2>Archivo Histórico</h2>
             <div class="slider" id="slider-4"></div>
         </div>
     </div>
@@ -180,9 +173,10 @@
             <div class="modal-info-box">
                 <h2 class="modal-title" id="modal-title-text"></h2>
                 <div class="modal-meta">
-                    <span class="meta-match" id="modal-match">98% para ti</span>
+                    <span class="meta-match">Reciente</span>
                     <span class="meta-year" id="modal-year"></span>
                     <span class="meta-creator" id="modal-creator"></span>
+                    <span class="meta-cc">🗣️ Activa el botón "CC" en el video para subtítulos</span>
                 </div>
                 <p class="modal-desc" id="modal-desc-text"></p>
             </div>
@@ -190,56 +184,68 @@
     </div>
 
     <script>
-        // Efecto scroll en Navbar
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Solicitamos 61 items con descripción, creador y año
-// Añadimos +AND+language:(eng+OR+spa) a la consulta
-const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvnews)+AND+language:(eng+OR+spa)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';        
+        // 1. EL FILTRO CORREGIDO: 
+        // Eliminamos "tv" pública. Usamos solo "tvnews" y forzamos a que el creador sea una cadena conocida.
+        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews)+AND+creator:(CNNW+OR+FOXNEWSW+OR+MSNBCW+OR+BBCNEWS+OR+CSPAN+OR+TELESUR+OR+ALJAZEERA)&fl[]=identifier,title,description,creator,addeddate,year&sort[]=addeddate+desc&output=json&rows=61';
+        
         let isModalOpen = false;
-        let globalItems = []; // Guardaremos los datos aquí para usarlos en el modal
+        let globalItems = [];
 
-        // Función para limpiar etiquetas HTML raras de las sinopsis de Archive.org
-        function cleanText(html) {
-            if (!html) return "No hay descripción disponible para esta transmisión.";
-            let txt = document.createElement("textarea");
-            txt.innerHTML = html;
-            let clean = txt.value.replace(/<[^>]*>?/gm, ''); // Elimina tags HTML
-            return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
+        // 2. EL GENERADOR DE DESCRIPCIONES (Ya no habrá espacios vacíos)
+        function getCleanDescription(item) {
+            if (item.description) {
+                let txt = document.createElement("textarea");
+                txt.innerHTML = item.description;
+                let clean = txt.value.replace(/<[^>]*>?/gm, ''); 
+                return clean.length > 300 ? clean.substring(0, 300) + "..." : clean;
+            }
+            
+            // Si no hay descripción, inventamos una formal basada en los datos:
+            const channel = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'una cadena internacional';
+            const dateStr = item.addeddate ? new Date(item.addeddate).toLocaleString() : 'recientemente';
+            return `Grabación en bruto capturada automáticamente de ${channel} el ${dateStr}. Las cadenas de televisión en vivo no adjuntan sinopsis detalladas al momento de la transmisión. Reproduce el video para ver la cobertura original y activa los subtítulos (CC) en la barra de control si están disponibles.`;
         }
 
         async function fetchArchiveData() {
-            // No actualizar la pantalla si el usuario está viendo un video en el modal
             if (isModalOpen) return; 
 
             try {
+                const statusEl = document.getElementById('status-text');
+                statusEl.innerText = "Sincronizando catálogo...";
+
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                if (!data.response || !data.response.docs) return;
+                // 3. SEGURO ANTI-CHOQUES: Si falla la búsqueda, no rompas la app.
+                if (!data.response || !data.response.docs || data.response.docs.length === 0) {
+                    statusEl.innerText = "Catálogo vacío. Reintentando en breve...";
+                    console.warn("La API devolvió 0 resultados.");
+                    return; 
+                }
                 
                 globalItems = data.response.docs;
 
-                // --- 1. Configurar Hero Banner ---
+                // Configurar Hero Banner
                 const hero = globalItems[0];
                 const heroImg = `https://archive.org/services/img/${hero.identifier}`;
-                const heroCleanDesc = cleanText(hero.description);
                 
                 document.getElementById('hero-banner').style.backgroundImage = `url('${heroImg}')`;
-                document.getElementById('hero-title').innerText = hero.title || 'Sin Título';
-                document.getElementById('hero-desc').innerText = heroCleanDesc;
+                document.getElementById('hero-title').innerText = hero.title || 'Transmisión Reciente';
+                document.getElementById('hero-desc').innerText = getCleanDescription(hero);
+                document.getElementById('hero-buttons-container').style.display = 'block';
                 
-                // Botones del Hero abren el Modal con los datos del video principal
                 const openHeroModal = () => openModal(hero);
                 document.getElementById('hero-play').onclick = openHeroModal;
                 document.getElementById('hero-info').onclick = openHeroModal;
 
-                // --- 2. Rellenar Carruseles ---
+                // Rellenar Carruseles
                 const fillSlider = (sliderId, startIndex, endIndex) => {
                     const slider = document.getElementById(sliderId);
-                    slider.innerHTML = ''; // Limpiar antes de actualizar
+                    slider.innerHTML = ''; 
                     globalItems.slice(startIndex, endIndex).forEach(item => {
                         slider.appendChild(createCard(item));
                     });
@@ -250,43 +256,37 @@ const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvne
                 fillSlider('slider-3', 31, 46);
                 fillSlider('slider-4', 46, 61);
 
-                const time = new Date().toLocaleTimeString();
-                document.getElementById('status-text').innerText = `Actualizado: ${time}`;
+                statusEl.innerText = `Catálogo al día (${new Date().toLocaleTimeString()})`;
 
             } catch (error) {
-                console.error("Error al obtener datos:", error);
-                document.getElementById('status-text').innerText = "Reconectando...";
+                console.error("Error grave en la conexión:", error);
+                document.getElementById('status-text').innerText = "Error de red. Reintentando...";
             }
         }
 
-        // Crea una miniatura que, al hacer clic, abre el modal
         function createCard(item) {
             const card = document.createElement('div');
             card.className = 'card';
             const imgUrl = `https://archive.org/services/img/${item.identifier}`;
             
             card.innerHTML = `<img src="${imgUrl}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222/555?text=ArchiveTV'">`;
-            
-            // Al hacer clic, abrimos la ventana de detalles
             card.onclick = () => openModal(item);
             return card;
         }
 
-        // --- LÓGICA DEL MODAL FUNCIONAL ---
         const modal = document.getElementById('modal');
         const iframe = document.getElementById('modal-iframe');
 
         function openModal(item) {
             isModalOpen = true;
-            document.body.style.overflow = 'hidden'; // Evita el scroll del fondo
+            document.body.style.overflow = 'hidden'; 
             
-            // Inyectar datos en la UI del Modal
-            document.getElementById('modal-title-text').innerText = item.title || 'Desconocido';
-            document.getElementById('modal-year').innerText = item.year ? item.year : new Date(item.addeddate).getFullYear();
-            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Archivo Público';
-            document.getElementById('modal-desc-text').innerText = cleanText(item.description);
+            document.getElementById('modal-title-text').innerText = item.title || 'Cobertura en Vivo';
+            document.getElementById('modal-year').innerText = item.year ? item.year : new Date().getFullYear();
+            document.getElementById('modal-creator').innerText = item.creator ? (Array.isArray(item.creator) ? item.creator[0] : item.creator) : 'Señal de TV';
+            document.getElementById('modal-desc-text').innerText = getCleanDescription(item);
             
-            // Inyectar URL del video con autoplay activado
+            // Forzamos el reproductor de Archive.org a cargar con autoplay
             iframe.src = `https://archive.org/embed/${item.identifier}?autoplay=1`;
             
             modal.classList.add('active');
@@ -294,20 +294,18 @@ const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv+OR+tvne
 
         function closeModal() {
             isModalOpen = false;
-            document.body.style.overflow = 'auto'; // Restaurar scroll
-            iframe.src = ''; // Limpiar src detiene el video automáticamente
+            document.body.style.overflow = 'auto'; 
+            iframe.src = ''; // Apagar video al cerrar
             modal.classList.remove('active');
         }
 
-        // Cerrar modal al hacer clic fuera del recuadro
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
 
-        // Inicializar
+        // Arranque inmediato
         fetchArchiveData();
-
-        // Actualizar datos cada minuto, de forma silenciosa
+        // Bucle a prueba de fallos
         setInterval(fetchArchiveData, 60000);
     </script>
 </body>
