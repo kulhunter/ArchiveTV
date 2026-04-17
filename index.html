@@ -3,178 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive TV - by Dantagle.cl</title>
+    <title>ArchiveTV - by Dantagle.cl </title>
     <style>
-        /* Diseño base estilo Netflix */
+        :root {
+            --netflix-red: #E50914;
+            --bg-color: #141414;
+            --text-color: #ffffff;
+        }
+
         body {
-            background-color: #141414;
-            color: #ffffff;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             overflow-x: hidden;
+            user-select: none;
         }
 
-        /* Barra de navegación */
-        header {
-            padding: 20px 40px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            position: sticky;
+        /* Navbar */
+        nav {
+            position: fixed;
             top: 0;
-            z-index: 100;
-        }
-
-        h1 {
-            color: #E50914; /* Rojo Netflix */
-            margin: 0;
-            font-size: 2em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .status {
-            font-size: 0.8em;
-            color: #808080;
-            margin-top: 5px;
-        }
-
-        /* Contenedor de las filas de videos */
-        .row-container {
+            width: 100%;
             padding: 20px 40px;
-        }
-
-        h2 {
-            font-size: 1.4em;
-            margin-bottom: 15px;
-        }
-
-        /* El Carrusel / Fila */
-        .video-row {
             display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding-bottom: 20px;
-            scrollbar-width: none; /* Firefox */
-        }
-        
-        .video-row::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            transition: background 0.3s ease;
         }
 
-        /* Tarjeta individual de video */
-        .card {
-            flex: 0 0 280px; /* Ancho fijo para cada tarjeta */
+        nav.scrolled {
+            background: var(--bg-color);
+        }
+
+        .logo {
+            color: var(--netflix-red);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
         }
 
-        .card:hover {
-            transform: scale(1.08); /* Efecto de zoom al pasar el mouse */
+        .nav-status {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        /* Hero Banner */
+        .hero {
+            height: 80vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%), 
+                        linear-gradient(to top, var(--bg-color) 0%, rgba(0,0,0,0) 20%);
+        }
+
+        .hero-content {
+            position: relative;
             z-index: 10;
+            max-width: 50%;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.45);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hero-buttons button {
+            padding: 10px 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-play {
+            background-color: white;
+            color: black;
+        }
+
+        .btn-play:hover { background-color: rgba(255,255,255,0.75); }
+
+        /* Sliders / Filas */
+        .sliders-container {
+            margin-top: -80px; /* Sube el contenido sobre el difuminado del Hero */
+            position: relative;
+            z-index: 20;
+            padding-bottom: 50px;
+        }
+
+        .row {
+            margin-bottom: 40px;
+            padding: 0 40px;
+        }
+
+        .row h2 {
+            font-size: 1.4vw;
+            color: #e5e5e5;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .slider {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 20px 0; /* Espacio para el hover */
+            scrollbar-width: none;
+        }
+
+        .slider::-webkit-scrollbar { display: none; }
+
+        .card {
+            flex: 0 0 calc(100% / 6 - 8px); /* 6 tarjetas por fila en escritorio */
+            aspect-ratio: 16 / 9;
+            background-color: #222;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.3s;
         }
 
         .card img {
             width: 100%;
-            height: 157px;
+            height: 100%;
             object-fit: cover;
             border-radius: 4px;
-            background-color: #222;
+        }
+
+        /* Efecto Hover estilo Netflix */
+        .card:hover {
+            transform: scale(1.3) translateY(-10%);
+            z-index: 99;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
         }
 
         .card-info {
-            padding-top: 10px;
+            opacity: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 20px 10px 10px 10px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .card:hover .card-info {
+            opacity: 1;
         }
 
         .card-title {
-            font-size: 0.9em;
+            font-size: 0.7vw;
             font-weight: bold;
+            margin: 0 0 4px 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin: 0 0 5px 0;
         }
 
-        .card-date {
-            font-size: 0.75em;
-            color: #46d369; /* Verde tipo coincidencia de Netflix */
+        .card-meta {
+            font-size: 0.6vw;
+            color: #46d369; /* Match green */
+            font-weight: bold;
+        }
+
+        /* Responsividad */
+        @media (max-width: 1024px) {
+            .card { flex: 0 0 calc(100% / 4 - 8px); }
+            .card-title { font-size: 1.2vw; }
+            .card-meta { font-size: 1vw; }
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .hero-content { max-width: 80%; }
+            .card { flex: 0 0 calc(100% / 3 - 8px); }
+            .card-title { font-size: 2vw; }
+            .card-meta { font-size: 1.5vw; }
+        }
+        @media (max-width: 480px) {
+            .card { flex: 0 0 calc(100% / 2 - 8px); }
+            .card-title { font-size: 3vw; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>ArchiveTV</h1>
-        <div class="status" id="last-update">Actualizando catálogo...</div>
+    <nav id="navbar">
+        <div class="logo">ArchiveTV</div>
+        <div class="nav-status" id="status-text">Actualizando...</div>
+    </nav>
+
+    <header class="hero" id="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title" id="hero-title">Cargando...</h1>
+            <p class="hero-description" id="hero-desc">Buscando las últimas transmisiones en Internet Archive...</p>
+            <div class="hero-buttons">
+                <button class="btn-play" id="hero-play">▶ Reproducir</button>
+            </div>
+        </div>
     </header>
 
-    <div class="row-container">
-        <h2>Transmisiones Recientes</h2>
-        <div id="video-feed" class="video-row">
-            </div>
+    <div class="sliders-container">
+        <div class="row">
+            <h2>Transmisiones Recientes</h2>
+            <div class="slider" id="slider-recent">
+                </div>
+        </div>
+        
+        <div class="row">
+            <h2>Noticias y Clásicos</h2>
+            <div class="slider" id="slider-news">
+                </div>
+        </div>
     </div>
 
     <script>
-        // Endpoint de la API de Archive.org
-        // Busca en la colección 'tv', ordena por fecha de agregado descendente y trae 20 resultados en JSON.
-        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv)&fl[]=identifier,title,addeddate&sort[]=addeddate+desc&output=json&rows=20';
-        
-        const videoFeed = document.getElementById('video-feed');
-        const lastUpdateText = document.getElementById('last-update');
+        // Efecto oscuro en el Navbar al hacer scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
 
-        // Función principal para obtener los datos
-        async function fetchArchiveTV() {
+        // Hacemos la consulta más amplia y robusta: tvnews y classic_tv
+        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tvnews+OR+classic_tv)&fl[]=identifier,title,description,addeddate&sort[]=addeddate+desc&output=json&rows=31';
+        
+        const sliderRecent = document.getElementById('slider-recent');
+        const sliderNews = document.getElementById('slider-news');
+        const statusText = document.getElementById('status-text');
+
+        async function fetchNetflixData() {
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
+                
+                if (!data.response || !data.response.docs || data.response.docs.length === 0) {
+                    statusText.innerText = "Error: No se encontraron videos.";
+                    return;
+                }
+
                 const items = data.response.docs;
 
-                // Limpiar la fila antes de insertar los nuevos videos
-                videoFeed.innerHTML = ''; 
+                // 1. Configurar el Hero Banner con el video #1 (índice 0)
+                const heroItem = items[0];
+                const heroImgUrl = `https://archive.org/services/img/${heroItem.identifier}`;
+                const heroVideoUrl = `https://archive.org/embed/${heroItem.identifier}`;
+                
+                document.getElementById('hero-banner').style.backgroundImage = `url('${heroImgUrl}')`;
+                document.getElementById('hero-title').innerText = heroItem.title || 'Sin Título';
+                document.getElementById('hero-desc').innerText = heroItem.description ? heroItem.description : 'Una transmisión reciente capturada por Internet Archive.';
+                document.getElementById('hero-play').onclick = () => window.open(heroVideoUrl, '_blank');
 
-                items.forEach(item => {
-                    // Archive.org genera miniaturas y enlaces basados en el "identifier" único de cada elemento
-                    const imgUrl = `https://archive.org/services/img/${item.identifier}`;
-                    const videoUrl = `https://archive.org/embed/${item.identifier}`; // Usamos /embed/ para un reproductor limpio
+                // Limpiar sliders
+                sliderRecent.innerHTML = '';
+                sliderNews.innerHTML = '';
 
-                    // Formatear la fecha
-                    const dateObj = new Date(item.addeddate);
-                    const formattedDate = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    // Crear la tarjeta HTML
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    // Al hacer clic, abre el video en una pestaña nueva
-                    card.onclick = () => window.open(videoUrl, '_blank'); 
-
-                    card.innerHTML = `
-                        <img src="${imgUrl}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/280x157/222222/FFFFFF?text=Sin+miniatura'">
-                        <div class="card-info">
-                            <p class="card-title">${item.title}</p>
-                            <span class="card-date">Agregado hoy a las ${formattedDate}</span>
-                        </div>
-                    `;
-                    
-                    videoFeed.appendChild(card);
+                // 2. Rellenar Fila 1 (Ítems del 1 al 15)
+                items.slice(1, 16).forEach(item => {
+                    sliderRecent.appendChild(createCard(item));
                 });
 
-                // Actualizar el texto de estado
+                // 3. Rellenar Fila 2 (Ítems del 16 al 30)
+                items.slice(16, 31).forEach(item => {
+                    sliderNews.appendChild(createCard(item));
+                });
+
                 const now = new Date();
-                lastUpdateText.innerText = `Última actualización: ${now.toLocaleTimeString()} - Se actualiza cada minuto.`;
-                console.log('Catálogo actualizado exitosamente.');
+                statusText.innerText = `Sincronizado: ${now.toLocaleTimeString()}`;
 
             } catch (error) {
-                console.error('Error al obtener los datos de Archive.org:', error);
-                lastUpdateText.innerText = 'Error al actualizar el catálogo. Reintentando...';
+                console.error("Error al obtener los datos:", error);
+                statusText.innerText = "Reconectando...";
             }
         }
 
-        // 1. Ejecutar la función inmediatamente al cargar la página
-        fetchArchiveTV();
+        // Función auxiliar para crear las tarjetas HTML
+        function createCard(item) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const imgUrl = `https://archive.org/services/img/${item.identifier}`;
+            const videoUrl = `https://archive.org/embed/${item.identifier}`;
+            
+            // Formatear hora
+            const dateObj = new Date(item.addeddate);
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // 2. Configurar el intervalo para que se ejecute cada 60,000 milisegundos (1 minuto)
-        setInterval(fetchArchiveTV, 60000);
+            card.onclick = () => window.open(videoUrl, '_blank');
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x169/222222/FFFFFF?text=ArchiveTV'">
+                <div class="card-info">
+                    <p class="card-title">${item.title}</p>
+                    <p class="card-meta">Nuevo • ${timeStr}</p>
+                </div>
+            `;
+            return card;
+        }
+
+        // Iniciar
+        fetchNetflixData();
+
+        // Actualizar cada 60 segundos
+        setInterval(fetchNetflixData, 60000);
     </script>
-
 </body>
 </html>
