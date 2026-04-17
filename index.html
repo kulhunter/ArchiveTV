@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive TV - by Dantagle.cl</title>
+    <style>
+        /* Diseño base estilo Netflix */
+        body {
+            background-color: #141414;
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Barra de navegación */
+        header {
+            padding: 20px 40px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            color: #E50914; /* Rojo Netflix */
+            margin: 0;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status {
+            font-size: 0.8em;
+            color: #808080;
+            margin-top: 5px;
+        }
+
+        /* Contenedor de las filas de videos */
+        .row-container {
+            padding: 20px 40px;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        /* El Carrusel / Fila */
+        .video-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .video-row::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        /* Tarjeta individual de video */
+        .card {
+            flex: 0 0 280px; /* Ancho fijo para cada tarjeta */
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.08); /* Efecto de zoom al pasar el mouse */
+            z-index: 10;
+        }
+
+        .card img {
+            width: 100%;
+            height: 157px;
+            object-fit: cover;
+            border-radius: 4px;
+            background-color: #222;
+        }
+
+        .card-info {
+            padding-top: 10px;
+        }
+
+        .card-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 0 5px 0;
+        }
+
+        .card-date {
+            font-size: 0.75em;
+            color: #46d369; /* Verde tipo coincidencia de Netflix */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ArchiveTV</h1>
+        <div class="status" id="last-update">Actualizando catálogo...</div>
+    </header>
+
+    <div class="row-container">
+        <h2>Transmisiones Recientes</h2>
+        <div id="video-feed" class="video-row">
+            </div>
+    </div>
+
+    <script>
+        // Endpoint de la API de Archive.org
+        // Busca en la colección 'tv', ordena por fecha de agregado descendente y trae 20 resultados en JSON.
+        const API_URL = 'https://archive.org/advancedsearch.php?q=collection:(tv)&fl[]=identifier,title,addeddate&sort[]=addeddate+desc&output=json&rows=20';
+        
+        const videoFeed = document.getElementById('video-feed');
+        const lastUpdateText = document.getElementById('last-update');
+
+        // Función principal para obtener los datos
+        async function fetchArchiveTV() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                const items = data.response.docs;
+
+                // Limpiar la fila antes de insertar los nuevos videos
+                videoFeed.innerHTML = ''; 
+
+                items.forEach(item => {
+                    // Archive.org genera miniaturas y enlaces basados en el "identifier" único de cada elemento
+                    const imgUrl = `https://archive.org/services/img/${item.identifier}`;
+                    const videoUrl = `https://archive.org/embed/${item.identifier}`; // Usamos /embed/ para un reproductor limpio
+
+                    // Formatear la fecha
+                    const dateObj = new Date(item.addeddate);
+                    const formattedDate = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    // Crear la tarjeta HTML
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    // Al hacer clic, abre el video en una pestaña nueva
+                    card.onclick = () => window.open(videoUrl, '_blank'); 
+
+                    card.innerHTML = `
+                        <img src="${imgUrl}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/280x157/222222/FFFFFF?text=Sin+miniatura'">
+                        <div class="card-info">
+                            <p class="card-title">${item.title}</p>
+                            <span class="card-date">Agregado hoy a las ${formattedDate}</span>
+                        </div>
+                    `;
+                    
+                    videoFeed.appendChild(card);
+                });
+
+                // Actualizar el texto de estado
+                const now = new Date();
+                lastUpdateText.innerText = `Última actualización: ${now.toLocaleTimeString()} - Se actualiza cada minuto.`;
+                console.log('Catálogo actualizado exitosamente.');
+
+            } catch (error) {
+                console.error('Error al obtener los datos de Archive.org:', error);
+                lastUpdateText.innerText = 'Error al actualizar el catálogo. Reintentando...';
+            }
+        }
+
+        // 1. Ejecutar la función inmediatamente al cargar la página
+        fetchArchiveTV();
+
+        // 2. Configurar el intervalo para que se ejecute cada 60,000 milisegundos (1 minuto)
+        setInterval(fetchArchiveTV, 60000);
+    </script>
+
+</body>
+</html>
